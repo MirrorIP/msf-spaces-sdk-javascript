@@ -1,0 +1,15 @@
+--- strophe.register.js	(SHA b16d527e1efe64c896d9e69f7902d8969d53f2b7)
++++ strophe.register.js	(CURRENT)
+@@ -195,10 +195,10 @@
+             return;
+         }
+ 
+-        if (register.length === 0) {
++        /*if (register.length === 0) { // MODIFIED: Openfire does not provide register information.
+             conn._changeConnectStatus(Strophe.Status.REGIFAIL, null);
+             return;
+-        }
++        }*/
+ 
+         // send a get request for registration, to get all required data fields
+         conn._addSysHandler(this._get_register_cb.bind(this),

@@ -1,0 +1,11 @@
+--- strophe.disco.js (SHA b8a5845c44b6ab51c1765c7fee42e31a974cd0bb)
++++ strophe.disco.js (current)
+@@ -87,7 +87,7 @@
+         for (var i=0; i<this._features.length; i++)
+         {
+              if (this._features[i] === var_name){
+-                 this._features.splice(i,1)
++                 this._features.splice(i,1);
+                  return true;
+              }
+         }

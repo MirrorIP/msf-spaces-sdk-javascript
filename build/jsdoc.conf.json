@@ -1,0 +1,25 @@
+{
+	"tags"      : {
+		"allowUnknownTags" : true
+	},
+	"plugins"   : ["plugins/markdown"],
+	"templates" : {
+		"cleverLinks"     : false,
+		"monospaceLinks"  : false,
+		"default"         : {
+			"outputSourceFiles" : false
+		},
+		"systemName"      : "Spaces SDK for JavaScript 1.3",
+		"footer"          : "",
+		"copyright"       : "",
+		"navType"         : "vertical",
+		"theme"           : "spacelab",
+		"linenums"        : true,
+		"collapseSymbols" : true,
+		"inverseNav"      : true
+	},
+	"markdown"  : {
+		"parser"   : "gfm",
+		"hardwrap" : true
+	}
+}

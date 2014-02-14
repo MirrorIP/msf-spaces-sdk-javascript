@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="spaces-sdk-javascript" default="build" basedir=".">
+
+	<description>
+		MIRROR Spaces SDK for JavaScript
+	</description>
+
+	<!-- load environment variables as properties -->
+	<property environment="env"/>
+
+	<!-- load properties files -->
+	<property file="build.properties"/>
+
+	<!-- default folder location properties -->
+	<property name="src.dir" value="src"/>
+	<property name="lib-src.dir" value="lib-src"/>
+	<property name="dist.dir" value="dist"/>
+	<property name="build.dir" value="build"/>
+	<property name="libs.dir" value="lib" />
+
+	<target name="init">
+		<mkdir dir="${dist.dir}"/>
+	</target>
+
+	<target name="clean" description="Delete generated folders.">
+		<delete dir="${dist.dir}" failonerror="false" deleteonexit="true" />
+	</target>
+	
+	<target name="minify" depends="init" description="Compile project.">
+    	<apply executable="java" parallel="false">
+	        <fileset dir="." includes="${lib-src.dir}/strophe.js"/>
+	        <arg line="-jar"/>
+	        <arg path="${build.dir}/yuicompressor-2.4.7.jar"/>
+	       	<arg line="--preserve-semi"/>
+	        <arg line="-o ${dist.dir}/strophe.min.js"/>
+	        <srcfile/>
+    	</apply>
+		<apply executable="java" parallel="false">
+	        <fileset dir="." includes="${src.dir}/${ant.project.name}.js"/>
+	        <arg line="-jar"/>
+	        <arg path="${build.dir}/yuicompressor-2.4.7.jar"/>
+	       	<arg line="--preserve-semi"/>
+	        <arg line="-o ${dist.dir}/${ant.project.name}-${project.version}.min.js"/>
+	        <srcfile/>
+		</apply>
+	</target>
+
+	<target name="js" depends="minify" description="Package project.">
+		<copy todir="${dist.dir}" overwrite="true">
+			<fileset dir="${libs.dir}" includes="*" excludes="" />
+		</copy>
+		<copy todir="${dist.dir}" overwrite="true">
+			<fileset dir="${src.dir}" includes="*" excludes="${ant.project.name}.js" />
+		</copy>
+		<copy todir="${dist.dir}" overwrite="true">
+			<fileset dir="${lib-src.dir}" includes="*"/>
+		</copy>
+		<copy file="${src.dir}/${ant.project.name}.js" tofile="${dist.dir}/${ant.project.name}-${project.version}.js" />
+	</target>
+	
+	<target name="build" depends="js" description="Build the project.">
+	</target>
+
+	<target name="rebuild" depends="clean, build" description="Rebuilds the project.">
+	</target>
+</project>
