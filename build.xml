@@ -40,7 +40,7 @@
 	        <arg line="-jar"/>
 	        <arg path="${build.dir}/yuicompressor-2.4.7.jar"/>
 	       	<arg line="--preserve-semi"/>
-	        <arg line="-o ${dist.dir}/${ant.project.name}-${project.version}.min.js"/>
+	        <arg line="-o ${dist.dir}/${ant.project.name}.min.js"/>
 	        <srcfile/>
 		</apply>
 	</target>
@@ -55,7 +55,7 @@
 		<copy todir="${dist.dir}" overwrite="true">
 			<fileset dir="${lib-src.dir}" includes="*"/>
 		</copy>
-		<copy file="${src.dir}/${ant.project.name}.js" tofile="${dist.dir}/${ant.project.name}-${project.version}.js" />
+		<copy file="${src.dir}/${ant.project.name}.js" tofile="${dist.dir}/${ant.project.name}.js" />
 	</target>
 	
 	<target name="build" depends="js" description="Build the project.">
