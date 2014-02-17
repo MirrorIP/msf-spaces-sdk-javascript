@@ -1974,12 +1974,41 @@ var SpacesSDK = (function() {
 		};
 		
 		/**
+		 * Adds a list of data objects to the local cache.
+		 * @private
+		 * @param {string} spaceId Identifier of the space the data objects were retrieved from.
+		 * @param {SpacesSDK.DataObject[]} dataObjectsToAdd List of data objects to add. Duplicates are ignored. 
+		 */
+		function addDataObjectsToCache(spaceId, dataObjectsToAdd) {
+			if (!dataObjects[spaceId]) {
+				dataObjects[spaceId] = [];
+			}
+			
+			for (var i = 0; i < dataObjectsToAdd.length; i++) {
+				var dataObject = dataObjectsToAdd[i];
+				if (!dataObject.getId) continue;
+				var dataObjectFound = false;
+				for (var j = 0; j < dataObjects[spaceId].length; j++) {
+					var dataObjectStored = dataObjects[spaceId][j];
+					if (!dataObjectStored.getId && (dataObject.getId() == dataObjectStored.getId())) {
+						dataObjectFound = true;
+						break;
+					}
+				}
+				if (!dataObjectFound) {
+					dataObjects[spaceId].push(dataObject);
+				}
+			}
+		}
+
+		
+		/**
 		 * Parses all received Items to DataObjects and requests the payloads if necessary.
 		 * @private
 		 * @function
 		 * @memberOf SpacesSDK.DataHandler.prototype
 		 * @param {XMLElement} message The message received.
-		 * @return {XMLElement[]} An array of all received DataObjects.
+		 * @return {SpacesSDK.DataObject[]} An array of all received data objects.
 		 */
 		function parseItems(message) {
 			var itemIdsToRequest = [];
@@ -2006,7 +2035,7 @@ var SpacesSDK = (function() {
 						var xmlDocument = Utils.createXMLDocumentWithElement(item);
 						var dataObject = new DataObject(xmlDocument.childNodes[0]);
 						if (!dataObjectFilter || dataObjectFilter.isDataObjectValid(dataObject)) {
-							dataObjects[spaceId][dataObjects[spaceId].length] = dataObject;
+							addDataObjectsToCache(spaceId, [dataObject]);
 						}
 						result[result.length] = dataObject;
 					}
@@ -2035,13 +2064,14 @@ var SpacesSDK = (function() {
 				if (!nodeId || nodeId == null) return true;
 				var spaceId = getSpaceId(nodeId);
 				if (!spaceId || spaceId == null) return true;
-				var items = parseItems(message);
-				if (!items || items == null) return true;
+				var dataObjects = parseItems(message);
+				if (!dataObjects || dataObjects == null) return true;
 				for (var listenerName in listeners) {
 					var listener = listeners[listenerName];
-					for (var i=0; i<items.length; i++) {
-						if (!dataObjectFilter || dataObjectFilter.isDataObjectValid(items[i])) {
-							listener.handleDataObject(items[i], spaceId);
+					for (var i = 0; i < dataObjects.length; i++) {
+						var dataObject = dataObjects[i];
+						if (!dataObjectFilter || dataObjectFilter.isDataObjectValid(dataObject)) {
+							listener.handleDataObject(dataObject, spaceId);
 						}
 					}
 				}
@@ -2396,7 +2426,7 @@ var SpacesSDK = (function() {
 		 */
 		
 		/**
-		 * Fallback for queryDataObjectsForSpace if no persistence service is available.
+		 * Fallback for queryDataObjectsBySpace if no persistence service is available.
 		 * @function
 		 * @private
 		 * @memberOf SpacesSDK.DataHandler.prototype
@@ -2442,6 +2472,7 @@ var SpacesSDK = (function() {
 									if (isValid) dataObjects.push(dataObject);
 								}
 							}
+							addDataObjectsToCache(spaceId, dataObjects);
 							onSuccess(dataObjects);
 						} else {
 							onSuccess(dataObjects);
@@ -2502,7 +2533,10 @@ var SpacesSDK = (function() {
 					}
 				}
 			}
-			performQuery(queryIq, onSuccess, onError);
+			performQuery(queryIq, function(receivedDataObjects) {
+				addDataObjectsToCache(spaceId, receivedDataObjects);
+				onSuccess(receivedDataObjects);
+			}, onError);
 		};
 		
 		/**

@@ -512,7 +512,7 @@ var SpacesSDKTest = (function() {
 					new SpacesSDK.filter.PeriodFilter(new Date(now.getTime() - 5000))
 				];
 				dataHandler.queryDataObjectsBySpace(testSpaceId, filters, function(queriedObject) {
-					console.debug('Received query result, stored as SpacesSDKTest.testObjects[' + testCounter + '].');
+					console.debug('Received filtered query result, stored as SpacesSDKTest.testObjects[' + testCounter + '].');
 					testObjects[testCounter++] = queriedObject;
 					assertEquals('At least one data object should have been returned.', true, queriedObject.length > 0, queriedObject);
 					onComplete();
@@ -611,6 +611,34 @@ var SpacesSDKTest = (function() {
 				dataHandler.publishDataObject(dataObject, testSpaceId, function(receivedDataObject) {
 					console.debug('Second object published.');
 				}, onError);
+			}, onError);
+		};
+		
+		tests['SpacesSDK.DataHandler.retrieveDataObjects'] = function(onComplete) {
+			dataHandler.addDataObjectListener(new SpacesSDK.DataObjectListener('mylistener', function(receivedDataObject, spaceId) {
+				console.debug('Received object on space ' + spaceId + '.');
+				
+				var cachedObjects = dataHandler.retrieveDataObjects(testSpaceId);
+				console.debug('Data object cache for space ' + spaceId + ': SpacesSDKTest.testObjects[' + testCounter + '].');
+				testObjects[testCounter++] = cachedObjects;
+				
+				var foundInCachedObjects = false;
+				for (var i = 0; i < cachedObjects.length; i++) {
+					if (cachedObjects[i].getId() == receivedDataObject.getId()) {
+						foundInCachedObjects = true;
+					}
+				}
+				assertEquals('Data object was not found in cache.', true, foundInCachedObjects, cachedObjects);
+				onComplete();
+			}));
+			
+			var onError = function(error) {
+				console.debug('Publishing failed. Error:', error);
+				throw 'Failed to publish test data object.'; 
+			};
+			
+			dataHandler.publishDataObject(dataObject, testSpaceId, function(receivedDataObject) {
+				console.debug('First object published.');
 			}, onError);
 		};
 		
