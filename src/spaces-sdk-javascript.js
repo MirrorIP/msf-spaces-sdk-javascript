@@ -2567,7 +2567,7 @@ var SpacesSDK = (function() {
 		 * If a persistence service is available, the data objects are requested from there and the filters are applied server-side. Otherwise all data is retrieved from the pubsub node and filtering is done at client-side.
 		 * @function
 		 * @memberOf SpacesSDK.DataHandler.prototype
-		 * @param {string} spaceIds List of identifiers for the spaces to request data objects from.
+		 * @param {string[]} spaceIds List of identifiers for the spaces to request data objects from.
 		 * @param {SpacesSDK.filter[]} filters A list of filters to apply. All filters are chained, i.e. <code>AndFilter</code> and <code>OrFilter</code> are ignored. The list may be empty.
 		 * @param {SpacesSDK.DataHandler~queryDataObjectsBySpaces$onSuccess} onSuccess Function to call if the request succeeds.
 		 * @param {SpacesSDK.DataHandler~queryDataObjectsBySpaces$onError} onError Function to call if an error occures.
@@ -2706,7 +2706,7 @@ var SpacesSDK = (function() {
 		 * Deletes multiple data objects from the storage. Only space moderators are allowed to perform this operation.
 		 * @function
 		 * @memberOf SpacesSDK.DataHandler.prototype
-		 * @param {string} objectIds List of identifiers for the data objects to delete.
+		 * @param {string[]} objectIds List of identifiers for the data objects to delete.
 		 * @param {SpacesSDK.DataHandler~deleteDataObjects$onSuccess} onSuccess Function to call if the request succeeds.
 		 * @param {SpacesSDK.DataHandler~deleteDataObjects$onError} onError Function to call if an error occures.
 		 */
