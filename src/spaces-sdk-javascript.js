@@ -2828,7 +2828,7 @@ var SpacesSDK = (function() {
 	 */
 	var filter = (function() {
 		/**
-		 * @class This meta filter represents a logical AND. IF and only if any child filter validates the data object, this filter will validate it too.
+		 * @class This meta filter represents a logical AND. A data object has to be successfully validated by each child filter in order to pass this filter.
 		 * @name AndFilter
 		 * @memberOf SpacesSDK.filter
 		 */
@@ -3080,7 +3080,7 @@ var SpacesSDK = (function() {
 		};
 		
 		/**
-		 * @class This meta filter represents a logical OR. If a single child filter validates the data object, this filter will validate it too.
+		 * @class This meta filter represents a logical OR. This filter will validate a data object if one ore more of the child filters does.
 		 * @name OrFilter
 		 * @memberOf SpacesSDK.filter
 		 */
