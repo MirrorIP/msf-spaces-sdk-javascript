@@ -2310,6 +2310,7 @@ var SpacesSDK = (function() {
 		
 		/**
 		 * Queries a data object by its identifier.
+		 * Requires a persistence service to be available.
 		 * @function
 		 * @memberOf SpacesSDK.DataHandler.prototype
 		 * @param {string} objectId Identifier for the data object to query.
@@ -2359,6 +2360,7 @@ var SpacesSDK = (function() {
 		
 		/**
 		 * Queries multiple data objects by their identifier.
+		 * Requires a persistence service to be available.
 		 * @function
 		 * @memberOf SpacesSDK.DataHandler.prototype
 		 * @param {string[]} objectIds A list of data object identifiers.
@@ -2373,19 +2375,19 @@ var SpacesSDK = (function() {
 				};
 			}
 			
-			var dataObjects = [];
-			
-			if (0 == objectIds.length) {
-				onSuccess(dataObjects);
-				return;
-			}
-			
 			if (connectionHandler.getStatus() != ConnectionStatus.ONLINE) {
 				onError('You must be online in order to query data.'); return;
 			}
 			var persistenceServiceJID = connectionHandler.getNetworkInformation().getPersistenceServiceJID();
 			if (!persistenceServiceJID) {
 				onError('No persistence service available.');
+			}
+			
+			var dataObjects = [];
+			
+			if (0 == objectIds.length) {
+				onSuccess(dataObjects);
+				return;
 			}
 			
 			var queryIq = $iq({
@@ -2491,6 +2493,7 @@ var SpacesSDK = (function() {
 		
 		/**
 		 * Queries all data objects of a single space which fits the given filters.
+		 * If a persistence service is available, the data objects are requested from there and the filters are applied server-side. Otherwise all data is retrieved from the pubsub node and filtering is done at client-side.
 		 * @function
 		 * @memberOf SpacesSDK.DataHandler.prototype
 		 * @param {string} spaceId Identifier of the space to request data objects from.
@@ -2505,8 +2508,6 @@ var SpacesSDK = (function() {
 				};
 			}
 			
-			var dataObjects = [];
-			
 			if (connectionHandler.getStatus() != ConnectionStatus.ONLINE) {
 				onError('You must be online in order to query data.'); return;
 			}
@@ -2516,6 +2517,8 @@ var SpacesSDK = (function() {
 				retrieveDataObjectsFromPubsubNode(spaceId, filters, onSuccess, onError);
 				return;
 			}
+			
+			var dataObjects = [];
 			
 			var queryIq = $iq({
 				from: connectionHandler.getCurrentUser().getFullJID(),
@@ -2555,6 +2558,7 @@ var SpacesSDK = (function() {
 		
 		/**
 		 * Queries all data objects from multiple spaces which fits the given filters.
+		 * If a persistence service is available, the data objects are requested from there and the filters are applied server-side. Otherwise all data is retrieved from the pubsub node and filtering is done at client-side.
 		 * @function
 		 * @memberOf SpacesSDK.DataHandler.prototype
 		 * @param {string} spaceIds List of identifiers for the spaces to request data objects from.
@@ -2569,19 +2573,32 @@ var SpacesSDK = (function() {
 				};
 			}
 			
-			var dataObjects = [];
+			if (connectionHandler.getStatus() != ConnectionStatus.ONLINE) {
+				onError('You must be online in order to query data.'); return;
+			}
 			
+			var dataObjects = [];
 			if (spaceIds.length == 0) {
 				// Nothing to do.
 				onSuccess(dataObjects);
 				return;
 			}
-			if (connectionHandler.getStatus() != ConnectionStatus.ONLINE) {
-				onError('You must be online in order to query data.'); return;
-			}
+			
 			var persistenceServiceJID = connectionHandler.getNetworkInformation().getPersistenceServiceJID();
 			if (!persistenceServiceJID) {
-				onError('No persistence service available.'); return;
+				var numReponses = 0;
+				for (var i = 0; i < spaceIds.length; i++) {
+					retrieveDataObjectsFromPubsubNode(spaceIds[i], filters, function(receivedDataObjects) {
+						dataObjects = dataObjects.concat(receivedDataObjects);
+						numReponses += 1;
+						if (numReponses == spaceIds.length) {
+							onSuccess(dataObjects);
+						}
+					}, function(error) {
+						onError(error);
+					});
+				}
+				return;
 			}
 			
 			var queryIq = $iq({
