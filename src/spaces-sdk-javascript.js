@@ -4,6 +4,12 @@
  */
 var SpacesSDK = (function() {
 	/**
+	 * Version of the SDK. This value is set when the SDK is packaged.
+	 * @memberOf SpacesSDK 
+	 */
+	var VERSION = '$VERSION$';
+	
+	/**
 	 * Collection of utility functions for the SDK to be used internally.
 	 * @name Utils
 	 * @namespace Utils
@@ -5150,6 +5156,7 @@ var SpacesSDK = (function() {
 	};
 	
 	var modules = {
+		'VERSION' : VERSION,
 		'Utils' : Utils,
 		'cdm' : cdm,
 		'ConnectionStatus' : ConnectionStatus,

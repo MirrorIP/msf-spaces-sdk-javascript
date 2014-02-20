@@ -56,6 +56,7 @@
 			<fileset dir="${lib-src.dir}" includes="*"/>
 		</copy>
 		<copy file="${src.dir}/${ant.project.name}.js" tofile="${dist.dir}/${ant.project.name}.js" />
+		<replace dir="${dist.dir}" includes="${ant.project.name}.*" token="$VERSION$" value="${project.version}" />
 	</target>
 	
 	<target name="build" depends="js" description="Build the project.">
