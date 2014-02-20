@@ -48,12 +48,12 @@ The Spaces SDK for Java is provided under the [Apache License 2.0][9].
 License information for third party libraries is provided with the JS files.
 
 ## Changelog
-v1.3 - February 20, 2014
+v1.3.0 - February 20, 2014
 
 - [UPDATE] DataHandler.queryDataObjectsBySpaces() can now be used without persistence service.
 - [FIX] Data objects are now cached properly.
 
-v1.3 RC1 - February 14, 2014
+v1.3.0 RC1 - February 14, 2014
 
 - Implements Spaces SDK API 1.3. See migration guide for updates.
 - [UPDATE] Updated Strophe.js and jQuery to latest version.
