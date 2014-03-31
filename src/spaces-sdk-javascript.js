@@ -2298,8 +2298,8 @@ var SpacesSDK = (function() {
 			var dataObjects = [];
 			connection.sendIQ(queryIq, function (resultIQ) {
 				var resultElement = resultIQ.getElementsByTagName('result')[0];
-				for (var i = 0; i < resultElement.children.length; i++) {
-					var dataObjectElement = resultElement.children[i];
+				for (var i = 0; i < resultElement.childNodes.length; i++) {
+					var dataObjectElement = resultElement.childNodes[i];
 					var dataObject = new DataObject(dataObjectElement);
 					dataObjects.push(dataObject);
 				}
