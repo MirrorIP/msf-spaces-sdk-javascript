@@ -48,6 +48,9 @@ The Spaces SDK for Java is provided under the [Apache License 2.0][9].
 License information for third party libraries is provided with the JS files.
 
 ## Changelog
+v1.3.1 - March 31, 2014
+- [FIX] Fixed bug causing an exception to be thrown in IE when retrieving data objects from a persistence service. 
+
 v1.3.0 - February 20, 2014
 
 - [UPDATE] DataHandler.queryDataObjectsBySpaces() can now be used without persistence service.
