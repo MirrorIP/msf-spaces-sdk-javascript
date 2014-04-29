@@ -4766,11 +4766,16 @@ var SpacesSDK = (function() {
 			connection.spaces.getSpacesList(function(res) {
 				var spaces = res;
 				var result = [];
+				if (spaces.length == 0) {
+					onSuccess(result);
+					return;
+				}
 				var checked = new Object();
 				var callBack = function(res2) {
 					if (!checked[res2.getId()]) {
 						checked[res2.getId()] = true;
 						result.push(res2);
+						
 						for (var i=0; i<spaces.length; i++) {
 							if (!checked[spaces[i].id]) return;
 						}
@@ -4781,11 +4786,11 @@ var SpacesSDK = (function() {
 					var number = i;
 					var errCallback = function(res) {
 						if (!checked[spaces[number].Id]) {
-						checked[spaces[number].id] = true;
-						for (var j=0; j<spaces.length; j++) {
-							if (!checked[spaces[j].id]) return;
-						}
-						onSuccess(result);
+							checked[spaces[number].id] = true;
+							for (var j=0; j<spaces.length; j++) {
+								if (!checked[spaces[j].id]) return;
+							}
+							onSuccess(result);
 						}
 					};
 					getAllSpaceInformation(spaces[i], callBack, errCallback);
