@@ -37,6 +37,9 @@ The SDK for Java implements the [Space SDK API][3]. Three major handlers are pro
 3. **[DataHandler][6]**
   The data handler provides methods to register for notifications about newly published data, and with methods to send and retrieve it. Additionally it allows queries to the [persistence service][7] to retrieve and manage persisted data.
 
+Guides how to use the SDK are available on GitHub:
+https://github.com/MirrorIP/msf-spaces-sdk-javascript/wiki
+
 Details about the usage of the handlers and connected classes are available of the API documentation.
 http://docs.mirror-demo.eu/spaces-sdk/javascript/1.3/
 
